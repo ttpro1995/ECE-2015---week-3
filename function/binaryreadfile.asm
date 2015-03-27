@@ -1,16 +1,17 @@
 .data  
 fin: .asciiz "Input.dat"      # filename for input
+	.space 2048
 	.word 0
 buffer: .asciiz ""
 	.space 2048
 
 row_1: .word 0
 col_1: .word 0
-matrix_1: .space 1024
+matrix_1: .space 2048
 
 row_2: .word 0
 col_2: .word 0
-matrix_2: .word 1024
+matrix_2: .space 2048
 
 
 
@@ -51,26 +52,56 @@ la $t2,matrix_1
 # process buffer
 	la $s0,buffer 
 	lw $s1,($s0)  # s1 = row length
+	la $t1,row_1 #t1 = address of row_1
+	sw $s1,($t1) # store row_1
+	
 	addi $s0,$s0,4 # increase $s0
 	lw $s2, ($s0)  # s2 = col length
+	la $t2,col_1 #t2 = address of col_1
+	sw $s2,($t2) #  store col_1
 	addi $s0,$s0,4  # s0 point to begin of first array
 	
-	addi $a0,$s0,0
+	addi $a0,$s0,0        # buffer of first matrix
 	la $a1,matrix_1 
 	addi $a2,$s1,0
 	addi $a3,$s2,0 
 	
 	jal CopyArray
-	addi $s0,$v0,0 # point to next row length
+	#addi $s0,$v0,0 # point to next row length
 	
-	lw $t5,($s0) # 000000000000000000000000000000000
+	addi $s0, $s0,240 #
 	
+	lw $t5,($s0) #  DEBUG 000000000000000000000000000000000 $t5 = 6 
+	
+	
+			
 	# print array
 	la $a0,matrix_1
 	addi $a1,$0,60
 	jal printArray
 
+	# second maxtrix
+	lw $s1,($s0)  # s1 = row length
+	addi $s0,$s0,4 # increase $s0
+	lw $s2, ($s0)  # s2 = col length
+	addi $s0,$s0,4  # s0 point to begin of first array
 	
+	addi $a0,$s0,0   # buffer of second matrix 
+	la $a1,matrix_2 
+	addi $a2,$s1,0
+	addi $a3,$s2,0 
+	
+	lw $t1,($a0)  #  DEBUG 000000000000000000000000000000000 $t5 = 6 
+	
+	
+	jal CopyArray
+	
+	jal new_line
+	
+	# print array
+	la $a0,matrix_2
+	addi $a1,$0,60
+	jal printArray
 
 	
 
@@ -124,14 +155,14 @@ addi $v0,$s0,0  # v0 return pointer which point to last element of array
 
 
 #restore saved register
-sw $s7, 0($sp)#store $s0
-sw $s6, 4($sp)#store $s1
-sw $s5, 8($sp)#store $s2
-sw $s4, 12($sp)#store $s3
-sw $s3, 16($sp)#store $s4
-sw $s2, 20($sp)#store $s5
-sw $s1, 24($sp)#store $s6
-sw $s0, 28($sp)#store $s7
+lw $s7, 0($sp)# restore $s0
+lw $s6, 4($sp)#restore $s1
+lw $s5, 8($sp)#restore $s2
+lw $s4, 12($sp)#restore $s3
+lw $s3, 16($sp)#restore $s4
+lw $s2, 20($sp)#restore $s5
+lw $s1, 24($sp)#restore $s6
+lw $s0, 28($sp)#restore $s7
 addi $sp,$sp,32  #increase stack pointer  by 32 byte
 jr $ra
 ##############
@@ -185,14 +216,14 @@ bne $t0, $0, forPrintLoop #continue loop
 
 
 #restore saved register
-sw $s7, 0($sp)#store $s0
-sw $s6, 4($sp)#store $s1
-sw $s5, 8($sp)#store $s2
-sw $s4, 12($sp)#store $s3
-sw $s3, 16($sp)#store $s4
-sw $s2, 20($sp)#store $s5
-sw $s1, 24($sp)#store $s6
-sw $s0, 28($sp)#store $s7
+lw $s7, 0($sp)#store $s0
+lw $s6, 4($sp)#store $s1
+lw $s5, 8($sp)#store $s2
+lw $s4, 12($sp)#store $s3
+lw $s3, 16($sp)#store $s4
+lw $s2, 20($sp)#store $s5
+lw $s1, 24($sp)#store $s6
+lw $s0, 28($sp)#store $s7
 addi $sp,$sp,32  #increase stack pointer  by 32 byte
 
 jr $ra
@@ -215,7 +246,16 @@ jr $ra
 printArray:
 # $a0 arr
 # $a1 length
-
+#store saved register
+addi $sp, $sp, -32   # decrease stack pointer by 32 byte all 8 register
+sw $s0, 28($sp)    #store $s0
+sw $s1, 24($sp)	#store $s1
+sw $s2, 20($sp)#store $s2
+sw $s3, 16($sp)#store $s3
+sw $s4, 12($sp)#store $s4
+sw $s5, 8($sp)#store $s5
+sw $s6, 4($sp)#store $s6
+sw $s7, 0($sp)#store $s7
 add $s0,$a0,$0  #s0 = base address of arr
 add $s1,$a1,$0  #s1 = length
 addi $s6,$0,8   #space bar
@@ -246,7 +286,16 @@ addi $s2,$s2,1   #increase i
 forPrint11:
 slt $t0,$s2,$s1  # i<length then $t0 =1
 bne $t0, $0, forPrintLoop11 #continue loop
-
+#restore saved register
+lw $s7, 0($sp)#store $s0
+lw $s6, 4($sp)#store $s1
+lw $s5, 8($sp)#store $s2
+lw $s4, 12($sp)#store $s3
+lw $s3, 16($sp)#store $s4
+lw $s2, 20($sp)#store $s5
+lw $s1, 24($sp)#store $s6
+lw $s0, 28($sp)#store $s7
+addi $sp,$sp,32  #increase stack pointer  by 32 byte
 jr $ra  #return
 
 #########################
