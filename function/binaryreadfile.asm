@@ -109,6 +109,7 @@ la $t2,matrix_1
 	addi $a1,$0,60
 	jal printArray
 
+# DEBUG (check value of row_1, col_1, row_2, col_2)
 la $t0,row_1  	
 la $t1,col_1
 la $t2,row_2
@@ -182,68 +183,7 @@ addi $sp,$sp,32  #increase stack pointer  by 32 byte
 jr $ra
 ##############
 
-############
-#printArray:
-# $a0 arr
-# $a1 length
-#store saved register
-addi $sp, $sp, -32   # decrease stack pointer by 32 byte all 8 register
-sw $s0, 28($sp)    #store $s0
-sw $s1, 24($sp)	#store $s1
-sw $s2, 20($sp)#store $s2
-sw $s3, 16($sp)#store $s3
-sw $s4, 12($sp)#store $s4
-sw $s5, 8($sp)#store $s5
-sw $s6, 4($sp)#store $s6
-sw $s7, 0($sp)#store $s7
 
-add $s0,$a0,$0  #s0 = base address of arr
-add $s1,$a1,$0  #s1 = length
-addi $s6,$0,8   #space bar
-addi $s2,$0,0  # $s2 = i = 0
-j forPrint
-forPrintLoop:
-#for (int i=0;i<length;i++)
-#Thai Thien 1351040
- # print(a[i])
-add $t5,$s2,$s2  # t5 =i*2
-add $t5,$t5,$t5  # t5 = 4*t5
-add $t5,$t5,$s0   #t5 = address of arr[i]
-lw  $t6,($t5)    #t6 = arr[i]
-
-add $a0,$t6,$0 #load arr[i] into $a0 to print
-addi $v0,$0,1  # $v0 = 1 print int
-
-addi $sp,$sp,-4 #adjust stack pointer
-sw $ra,($sp)     #store $ra
-syscall   #print arr[i]
-#Thai Thien 1351040
-jal new_line  # go to new line
-
-lw $ra,($sp)   #restore %ra
-addi $sp,$sp,4    #adjust stack pointer
-
- 
-addi $s2,$s2,1   #increase i   
-forPrint:
-slt $t0,$s2,$s1  # i<length then $t0 =1
-bne $t0, $0, forPrintLoop #continue loop
-
-
-#restore saved register
-lw $s7, 0($sp)#store $s0
-lw $s6, 4($sp)#store $s1
-lw $s5, 8($sp)#store $s2
-lw $s4, 12($sp)#store $s3
-lw $s3, 16($sp)#store $s4
-lw $s2, 20($sp)#store $s5
-lw $s1, 24($sp)#store $s6
-lw $s0, 28($sp)#store $s7
-addi $sp,$sp,32  #increase stack pointer  by 32 byte
-
-jr $ra
-
-#########################
 
 ############new_line############
 new_line: # go to next line
