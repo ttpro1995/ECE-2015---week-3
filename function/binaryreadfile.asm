@@ -85,11 +85,11 @@ la $t2,matrix_1
 	# second maxtrix
 	lw $s1,($s0)  # s1 = row length
 	la $t1,row_2  # load  address row_2 
-	sw $s1,row_2  # store row_2
+	sw $s1,($t1)  # store row_2
 	addi $s0,$s0,4 # increase $s0
 	lw $s2, ($s0)  # s2 = col length
 	la $t1,col_2  # load  address row_2 
-	sw $s1,col_2  # store row_2
+	sw $s2,($t1)  # store row_2
 	addi $s0,$s0,4  # s0 point to begin of first array
 	
 	addi $a0,$s0,0   # buffer of second matrix 
@@ -109,7 +109,16 @@ la $t2,matrix_1
 	addi $a1,$0,60
 	jal printArray
 
-	
+la $t0,row_1  	
+la $t1,col_1
+la $t2,row_2
+la $t3,col_2
+lw $t4,($t0) #VALUE OF ROW_1
+lw $t5,($t1)	#VALUE OF COL_1
+lw $t6,($t2)#VALUE OF ROW_2
+lw $t7,($t3)#VALUE OF COL_2
+
+
 
 li $v0,10
 syscall
