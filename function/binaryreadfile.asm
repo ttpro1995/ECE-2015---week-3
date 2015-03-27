@@ -61,13 +61,16 @@ la $t2,matrix_1
 	addi $a3,$s2,0 
 	
 	jal CopyArray
-	addi $s0,$v0,4 # point to next row length
+	addi $s0,$v0,0 # point to next row length
+	
+	lw $t5,($s0) # 000000000000000000000000000000000
+	
 	# print array
 	la $a0,matrix_1
 	addi $a1,$0,60
 	jal printArray
 
-
+	
 
 	
 
