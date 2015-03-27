@@ -69,7 +69,9 @@ la $t2,matrix_1
 	jal CopyArray
 	#addi $s0,$v0,0 # point to next row length
 	
-	addi $s0, $s0,240 #
+	mul $t0,$s2,$s1 # t0 = row*col of matrix_1
+	mul $t0,$t0,4   # t0 = t0*4 = space that matrix_1 take
+	add $s0,$s0,$t0 # point to num of row of maxtrix_2
 	
 	lw $t5,($s0) #  DEBUG 000000000000000000000000000000000 $t5 = 6 
 	
@@ -82,8 +84,12 @@ la $t2,matrix_1
 
 	# second maxtrix
 	lw $s1,($s0)  # s1 = row length
+	la $t1,row_2  # load  address row_2 
+	sw $s1,row_2  # store row_2
 	addi $s0,$s0,4 # increase $s0
 	lw $s2, ($s0)  # s2 = col length
+	la $t1,col_2  # load  address row_2 
+	sw $s1,col_2  # store row_2
 	addi $s0,$s0,4  # s0 point to begin of first array
 	
 	addi $a0,$s0,0   # buffer of second matrix 
